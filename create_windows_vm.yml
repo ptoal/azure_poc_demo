@@ -10,6 +10,8 @@
     operating_system: other
     publisher: MicrosoftWindowsServer
     version: latest
+    azureuser: azadmin
+    azurepassword: V3rySn3akyPa1ssword
     sku: windowsserver
     vm_size: Standard_B1s
     # vm_names: "{{ vm_name.split(',') }}"

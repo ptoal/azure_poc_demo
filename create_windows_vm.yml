@@ -6,7 +6,7 @@
   # Temporary
   vars:
     resource_group_name: azure_poc_ptoal
-    storage_account_name: ptoalPOC
+    storage_account_name: ptoalpoc
     publisher: microsoftwindowsserver
     version: latest
     sku: windowsserver

@@ -9,7 +9,7 @@
     storage_account_name: ptoalpoc
     operating_system: other
     publisher: MicrosoftWindowsServer
-    version: latest
+    offer: WindowsServer
     azureuser: azadmin
     azurepassword: !vault |
           $ANSIBLE_VAULT;1.2;AES256;rhdemo
@@ -18,7 +18,7 @@
           37363165393735636361383861633133643335316135396661376439353066356364626636666638
           6335613735343534340a633764343532656435353265303534353562343061643334313539663939
           65366133366239363330623261643266303764616465323465376433376436636263
-    sku: windowsserver
+    sku: 2022-datacenter-azure-edition-core
     vm_size: Standard_B1s
     # vm_names: "{{ vm_name.split(',') }}"
     vm_names:

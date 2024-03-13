@@ -6,3 +6,8 @@
     - name: Say hello
       ansible.builtin.debug:
         msg: "Hello world!"
+
+    - name: SNow Message
+      ansible.builtin.debug:
+        msg: "{{ greeting_name_input }} says: {{ greeting_message_input }}"
+      when: greeting_message_input and greeting_name_input

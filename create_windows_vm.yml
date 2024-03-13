@@ -13,7 +13,8 @@
     sku: windowsserver
     vm_size: Standard_B1s
     # vm_names: "{{ vm_name.split(',') }}"
-    vm_names: "{{ new_vm_hostname }}"
+    vm_names:
+      - "{{ new_vm_hostname }}"
   roles:
     - azure_create_resource_group
     - azure_create_storage_account

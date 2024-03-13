@@ -1,0 +1,4 @@
+.*.vault
+ansible-navigator.log
+**/ansible_collections
+.vscode

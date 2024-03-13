@@ -1,0 +1,8 @@
+---
+- name: Apply CIS 2022
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Include Lockdown role
+      ansible.builtin.include_role:
+        name: Windows-2022-CIS

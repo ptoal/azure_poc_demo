@@ -1,0 +1,19 @@
+---
+- name: Provision resource group in Azure
+  hosts: localhost
+  gather_facts: false
+
+  # Temporary
+  vars:
+    resource_group_name: azure_poc_ptoal
+    storage_account_name: azure_poc_ptoal
+    publisher: microsoftwindowsserver
+    version: latest
+    sku: windowsserver
+    vm_size: Standard_B1s
+    # vm_names: "{{ vm_name.split(',') }}"
+    vm_names: "{{ new_vm_hostname }}"
+  roles:
+    - azure_create_storage_account
+    - azure_create_resource_group
+    - azure_create_vm

@@ -77,3 +77,10 @@
       ansible.builtin.include_tasks: enable_winrm_loop_azure.yml
       loop: "{{ vm_names }}"
       when: publisher == "MicrosoftWindowsServer"
+
+    - name: Execute Powershell script
+      ansible.builtin.script:
+        cmd: files/ngen.ps1
+
+
+        

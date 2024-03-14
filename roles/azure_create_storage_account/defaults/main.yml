@@ -1,2 +1,0 @@
----
-storage_account_names: "{{ storage_account_name.split(',') }}"

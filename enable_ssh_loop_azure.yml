@@ -11,8 +11,9 @@
     publicipaddress: "{{ publicipaddresses | json_query('publicipaddresses[0].ip_address') }}"
   when: publisher == "MicrosoftWindowsServer"
 
-- name: Wait for the WinRM port to come online
-  ansible.builtin.wait_for_connection:
+- name: Wait for the ssh port to come online
+  ansible.builtin.wait_for:
+    port: 22
     host: "{{ publicipaddress }}"
     timeout: 600
   when: publisher == "MicrosoftWindowsServer"

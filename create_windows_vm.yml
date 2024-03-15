@@ -56,8 +56,8 @@
           version: "{{ version }}"
           sku: "{{ sku }}"
         tags:
-          - ansible
-          - "{{ new_vm_connection }}"
+          ansible: managed
+          ansible_connection: "{{ new_vm_connection }}"
       register: azure_vm
       loop: "{{ vm_names }}"
       when: publisher == "MicrosoftWindowsServer"

@@ -20,7 +20,7 @@
           6335613735343534340a633764343532656435353265303534353562343061643334313539663939
           65366133366239363330623261643266303764616465323465376433376436636263
     sku: 2022-datacenter-azure-edition-core
-    vm_size: Standard_B1s
+    vm_size: Standard_D4s_v3
     vm_names: "{{ new_vm_hostname.split(',') }}"
     # vm_names:
     #   - "{{ new_vm_hostname }}"

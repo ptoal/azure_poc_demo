@@ -67,10 +67,10 @@
     - name: Wait for VM Creation to complete
       ansible.builtin.async_status:
         jid: "{{ item.ansible_job_id }}"
-        register: jobs_azure_vm
-        retries: 60
-        delay: 5
-        until: jobs_azure_vm.finished
+      register: jobs_azure_vm
+      retries: 60
+      delay: 5
+      until: jobs_azure_vm.finished
       loop: "{{ azure_vm.results }}"
 
     - name: Enable WinRM

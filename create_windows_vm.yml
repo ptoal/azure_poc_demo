@@ -21,9 +21,9 @@
           65366133366239363330623261643266303764616465323465376433376436636263
     sku: 2022-datacenter-azure-edition-core
     vm_size: Standard_B1s
-    # vm_names: "{{ vm_name.split(',') }}"
-    vm_names:
-      - "{{ new_vm_hostname }}"
+    vm_names: "{{ new_vm_hostname.split(',') }}"
+    # vm_names:
+    #   - "{{ new_vm_hostname }}"
 
   tasks:
     - name: Resource Group Creation

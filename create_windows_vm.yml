@@ -96,5 +96,5 @@
           loop: "{{ vm_names }}"
 
         - name: Loop to verify SSH
-          ansible.builtin.include_tasks: enable_winrm_loop_ssh.yml
+          ansible.builtin.include_tasks: enable_ssh_loop.yml
           loop: "{{ vm_names }}"

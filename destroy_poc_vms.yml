@@ -1,0 +1,23 @@
+---
+- name: Destroy hosts
+  hosts: localhost
+  gather_facts: false
+  vars:
+    resource_group_name: azure_poc_ptoal
+  tasks:
+    - name: Get all VMs in a resource group from Azure
+      azure.azcollection.azure_rm_virtualmachine_info:
+        resource_group: "{{ resource_group_name }}"
+      register: vm_list
+    
+
+    - name: Destroy Windows VMs in Azure
+      azure.azcollection.azure_rm_virtualmachine:
+        resource_group: "{{ resource_group_name }}"
+        name: "{{ item.name }}"
+        state: absent
+      register: win_destroy_result
+      until: win_destroy_result is not failed
+      retries: 30
+      delay: 10
+      loop: "{{ vm_list }}"

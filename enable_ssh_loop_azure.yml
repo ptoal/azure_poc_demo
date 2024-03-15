@@ -1,0 +1,18 @@
+---
+- name: Get facts for one Public IP
+  azure.azcollection.azure_rm_publicipaddress_info:
+    resource_group: "{{ resource_group_name }}"
+    name: "{{ item }}01"
+  register: publicipaddresses
+  when: publisher == "MicrosoftWindowsServer"
+
+- name: Set public ip address fact
+  ansible.builtin.set_fact:
+    publicipaddress: "{{ publicipaddresses | json_query('publicipaddresses[0].ip_address') }}"
+  when: publisher == "MicrosoftWindowsServer"
+
+- name: Wait for the WinRM port to come online
+  ansible.builtin.wait_for_connection:
+    host: "{{ publicipaddress }}"
+    timeout: 600
+  when: publisher == "MicrosoftWindowsServer"

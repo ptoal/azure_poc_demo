@@ -9,7 +9,6 @@
       azure.azcollection.azure_rm_virtualmachine_info:
         resource_group: "{{ resource_group_name }}"
       register: vm_list
-    
 
     - name: Destroy Windows VMs in Azure
       azure.azcollection.azure_rm_virtualmachine:
@@ -20,4 +19,4 @@
       until: win_destroy_result is not failed
       retries: 30
       delay: 10
-      loop: "{{ vm_list }}"
+      loop: "{{ vm_list.vms }}"

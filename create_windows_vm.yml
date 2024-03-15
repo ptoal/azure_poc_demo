@@ -57,13 +57,13 @@
           sku: "{{ sku }}"
         tags:
           - ansible
-          - ssh
+          - "{{ new_vm_connection }}"
       register: azure_vm
       loop: "{{ vm_names }}"
       when: publisher == "MicrosoftWindowsServer"
 
     - name: Enable WinRM
-      when: publisher == "MicrosoftWindowsServer" and win_vm_connection == "winrm"
+      when: publisher == "MicrosoftWindowsServer" and new_vm_connection == "winrm"
       block:
         - name: Create VM script extension to enable HTTPS WinRM listener
           azure.azcollection.azure_rm_virtualmachineextension:
@@ -83,7 +83,7 @@
 
 
     - name: Enable SSH
-      when: publisher == "MicrosoftWindowsServer" and win_vm_connection == "ssh"
+      when: publisher == "MicrosoftWindowsServer" and new_vm_connection == "ssh"
       block:
         - name: Create VM script extension to enable SSH
           azure.azcollection.azure_rm_virtualmachineextension:

@@ -61,6 +61,8 @@
       register: azure_vm
       loop: "{{ vm_names }}"
       when: publisher == "MicrosoftWindowsServer"
+      async: 300
+      poll: 5
 
     - name: Enable WinRM
       when: publisher == "MicrosoftWindowsServer" and new_vm_connection == "winrm"

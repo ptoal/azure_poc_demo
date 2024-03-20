@@ -1,4 +1,7 @@
 ---
+ungrouped:
+  hosts:
+    localhost:
 windows:
   children:
     ansible_connection_ssh:

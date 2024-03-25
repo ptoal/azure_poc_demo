@@ -5,6 +5,8 @@
     - name: Use URI module to get info from Azure Metadata service
       ansible.windows.win_uri:
         url: "http://169.254.169.254/metadata/instance?api-version=2019-03-11"
+        headers:
+          Metadata: true
         return_content: true
       register: azure_metadata_service_info
 

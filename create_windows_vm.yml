@@ -121,3 +121,7 @@
         - name: Loop to verify SSH
           ansible.builtin.include_tasks: enable_ssh_loop_azure.yml
           loop: "{{ vm_names }}"
+
+    - name: Test Debug
+      debug:
+        msg: "Hello World"

@@ -1,0 +1,15 @@
+---
+- name: Gather Azure Facts from host
+  hosts: all
+  tasks:
+    - name: Use URI module to get info from Azure Metadata service
+      ansible.builtin.uri:
+        url: "http://169.254.169.254/metadata/instance?api-version=2019-03-11"
+        return_content: true
+      register: azure_metadata_service_info
+
+    - name: Display data
+      debug:
+        var: azure_metadata_service_info
+
+      

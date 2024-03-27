@@ -3,6 +3,15 @@
   hosts: localhost
 
   tasks:
+    - name: Discover all Azure NSG's in a subscription
+      azure.azcollection.azure_rm_networksecuritygroup_info:
+        resource_group: "{{ resource_group }}"
+      register: azure_nsg_list
+
+    - name: Print list
+      ansible.builtin.debug:
+        var: azure_nsg_list
+    
     - name: Ensure Azure NSG exists
       azure.azcollection.azure_rm_securitygroup:
         resource_group: "{{ nsg_config.rg }}"

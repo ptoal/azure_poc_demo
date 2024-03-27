@@ -4,7 +4,7 @@
 
   tasks:
     - name: Discover all Azure NSG's in a subscription
-      azure.azcollection.azure_rm_networksecuritygroup_info:
+      azure.azcollection.azure_rm_securitygroup_info:
         resource_group: "{{ resource_group }}"
       register: azure_nsg_list
 

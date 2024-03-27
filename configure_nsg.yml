@@ -1,0 +1,24 @@
+---
+- name: Configure Azure NSG
+  hosts: localhost
+  vars:
+    nsg_config:
+      rg: test
+      name: testnsg
+      rules:
+        - name: allow-ssh
+          protocol: Tcp
+          destination_port_range: 22
+          access: Allow
+          priority: 1001
+          direction: Inbound
+
+  tasks:
+    - name: Ensure Azure NSG exists
+      azure.azcollection.azure_rm_securitygroup:
+        resource_group: "{{ nsg_config.rg }}"
+        name: "{{ nsg_config.name }}"
+        tags:
+          ansible: managed
+        purge_rules: true
+        rules: "{{ nsg_config.rules }}"

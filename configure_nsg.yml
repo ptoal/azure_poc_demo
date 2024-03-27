@@ -8,22 +8,22 @@
         all: true
       register: az_subscription
 
-    - name: Discover all RG's in a subscription
-      azure.azcollection.azure_rm_resourcegroup_info:
-        subscription_id: "{{ item }}"
-      loop: "{{ az_subscription }}"
-      async: 0
-      timeout: 600
-      register: rg_lookup_result
+    # - name: Discover all RG's in a subscription
+    #   azure.azcollection.azure_rm_resourcegroup_info:
+    #     subscription_id: "{{ item }}"
+    #   loop: "{{ az_subscription }}"
+    #   async: 0
+    #   timeout: 600
+    #   register: rg_lookup_result
 
-    - name: Wait for previous step to complete
-      ansible.builtin.async_status:
-        jid: "{{ item.ansible_job_id }}"
-      loop: "{{ rg_lookup_result.results }}"
-      register: job_result
-      until: job_result.finished
-      retries: 300
-    
+    # - name: Wait for previous step to complete
+    #   ansible.builtin.async_status:
+    #     jid: "{{ item.ansible_job_id }}"
+    #   loop: "{{ rg_lookup_result.results }}"
+    #   register: job_result
+    #   until: job_result.finished
+    #   retries: 300
+
     - name: Discover all Azure NSG's in a subscription
       azure.azcollection.azure_rm_securitygroup_info:
         resource_group: "{{ nsg_config.rg }}"

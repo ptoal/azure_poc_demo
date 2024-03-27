@@ -3,6 +3,10 @@
   hosts: localhost
 
   tasks:
+    - name: Get facts for all subscriptions, including ones that are disabled.
+      azure.azcollection.azure_rm_subscription_info:
+        all: true
+
     - name: Discover all Azure NSG's in a subscription
       azure.azcollection.azure_rm_securitygroup_info:
         resource_group: "{{ nsg_config.rg }}"

@@ -12,12 +12,11 @@
       azure.azcollection.azure_rm_virtualmachine_info:
         resource_group: "{{ nsg_config.rg }}"
       register: vm_facts
-    
+
     - name: Gather VM sizes
       azure.azcollection.azure_rm_virtualmachinesize_info:
-        resource_group: "{{ nsg_config.rg }}"
+        location: "eastus"
       register: vm_size_facts
-        
 
     # - name: Discover all RG's in a subscription
     #   azure.azcollection.azure_rm_resourcegroup_info:

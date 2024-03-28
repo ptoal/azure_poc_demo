@@ -14,7 +14,7 @@
       register: vm_facts
     
     - name: Gather VM sizes
-      azure.azcollection.azure_rm_virtualmachinesize_info module:
+      azure.azcollection.azure_rm_virtualmachinesize_info:
         resource_group: "{{ nsg_config.rg }}"
       register: vm_size_facts
         

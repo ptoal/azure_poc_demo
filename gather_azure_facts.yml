@@ -8,12 +8,13 @@
         headers:
           Metadata: true
         return_content: true
-      register: azure_metadata_service_info
+      register: azure_info
 
     - name: Gather VM sizes
       azure.azcollection.azure_rm_virtualmachinesize_info:
         location: "eastus"
       register: vm_size_facts
+      delegate_to: localhost
 
     - name: Set VM Size info
       set_fact:

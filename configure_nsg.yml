@@ -8,6 +8,12 @@
         all: true
       register: az_subscription
 
+    - name: Gather VM info from Azure
+      azure.azcollection.azure_rm_virtualmachine_info:
+        resource_group: "{{ nsg_config.rg }}"
+      register: vm_facts
+    
+
     # - name: Discover all RG's in a subscription
     #   azure.azcollection.azure_rm_resourcegroup_info:
     #     subscription_id: "{{ item }}"

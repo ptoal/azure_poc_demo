@@ -10,6 +10,15 @@
         return_content: true
       register: azure_metadata_service_info
 
+    - name: Gather VM sizes
+      azure.azcollection.azure_rm_virtualmachinesize_info:
+        location: "eastus"
+      register: vm_size_facts
+
+    - name: Set VM Size info
+      set_fact:
+        vm_size_info: "{{ vm_size_facts | map('extract',azure_metadata_service_info.json.compute.vmSize }}"
+
     - name: Display data
       ansible.builtin.debug:
         var: azure_metadata_service_info.json.compute.location

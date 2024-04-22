@@ -17,7 +17,8 @@
 
   tasks:
     - name: Create RG
-      include_role: azure_create_resource_group
+      include_role: 
+        name: azure_create_resource_group
 
     - name: Provision instance Windows
       azure.azcollection.azure_rm_virtualmachine:

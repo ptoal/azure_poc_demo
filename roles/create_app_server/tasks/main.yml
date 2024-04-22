@@ -1,0 +1,63 @@
+---
+
+- name: Create a public ip address
+  azure.azcollection.azure_rm_publicipaddress:
+    resource_group: "{{ prefix }}_rg"
+    name: "{{ item.name }}_pip"
+    allocation_method: Dynamic
+    tags:
+      ansible: managed
+      app: juiceshop
+  loop: "{{ appServers }}"
+
+
+- name: Create network interface
+  azure.azcollection.azure_rm_networkinterface:
+    name: "{{ item.name }}_inf"
+    public_ip_address_name: "{{ item.name }}_pip"
+    resource_group: "{{ prefix }}_rg"
+    security_group_name: "{{ prefix }}_sg_ext"
+    subnet_name: "{{ prefix }}_sub_ext"
+    virtual_network_name: "{{ prefix }}_rg_vnet"
+    tags:
+      ansible: managed
+  loop: "{{ appServers }}"
+
+- name: Create JuiceShop VM
+  azure.azcollection.azure_rm_virtualmachine:
+    state: present
+    resource_group: "{{ prefix }}_rg"
+    location: "{{ location }}"
+    name: "{{ item.name }}"
+    vm_size: "{{ item.instanceType }}"
+#    custom_data: "{{ lookup('file', 'bodgeit_user_data.sh') }}"
+    admin_username: "{{ azureuser }}"
+    admin_password: "{{ azurepassword }}"
+    ssh_password_enabled: true
+    ssh_public_keys: '{{ ssh_public_keys }}'
+    subnet_name: "{{ prefix }}_sub_ext"
+    short_hostname: "{{ item.shortName }}"
+    network_interfaces: "{{ item.name }}_inf"
+    image:
+      offer: RHEL
+      publisher: RedHat
+      sku: '9-lvm'
+      version: latest
+    tags:
+      appName: juiceshop
+      ansible: managed
+  tags: app
+  delegate_to: localhost
+  with_items: "{{ appServers }}"
+  register: azure_vm
+  async: 300
+  poll: 0
+
+- name: Wait for VM Creation to complete
+  ansible.builtin.async_status:
+    jid: "{{ item.ansible_job_id }}"
+  register: jobs_azure_vm
+  retries: 60
+  delay: 5
+  until: jobs_azure_vm.finished
+  loop: "{{ azure_vm.results }}"

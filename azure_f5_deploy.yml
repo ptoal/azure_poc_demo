@@ -1,0 +1,114 @@
+---
+- name: Azure F5 LB deployment
+  hosts: localhost
+  tasks:
+
+    - name: Setup AZ Environment
+      ansible.builtin.include_role:
+        name: setup_az_env
+
+    - name: Setup App Servers
+      ansible.builtin.include_role:
+        name: create_app_server
+
+    - name: Refresh Inventory
+      ansible.builtin.meta: refresh_inventory
+
+- name: Install dependencies
+  hosts: app_juiceshop
+  become: true
+  tasks:
+
+    - name: Ensure podman is installed
+      ansible.builtin.package:
+        name: podman
+        state: present
+
+    - name: Firewall open
+      # Content suggestion provided by Ansible Lightspeed
+      ansible.posix.firewalld:
+        port: 3000/tcp
+        permanent: true
+        state: enabled
+        immediate: true
+
+
+- name: Install App
+  hosts: app_juiceshop
+  tasks:
+    - name: Run bkimminich/juice-shop container using podman
+      containers.podman.podman_container:
+        name: juiceshop
+        image: docker.io/bkimminich/juice-shop
+        state: started
+        expose:
+          - 3000
+
+- name: Set up Azure Application Gateway
+  hosts: localhost
+  tasks:
+
+    - name: Dump azure vm info
+      ansible.builtin.debug:
+        var: jobs_azure_vm
+
+    - name: IP List for Backend
+      ansible.builtin.set_fact:
+        ip_list: "{{ jobs_azure_vm.results | map(attribute='ansible_facts.azure_vm.properties.networkProfile.networkInterfaces.0.properties.ipConfigurations.0.properties.publicIPAddress.properties.ipAddress') }}"
+
+    - name: Loop over list and create a hash
+      ansible.builtin.set_fact:
+        formatted_ip_list: "{{ formatted_ip_list | default([]) + [{'ip_address': item}] }}"
+      loop: "{{ ip_list }}"
+
+    - name: Create a public IP address
+      # Content suggestion provided by Ansible Lightspeed
+      azure.azcollection.azure_rm_publicipaddress:
+        name: juiceshop-public-ip
+        resource_group: "{{ resource_group_name }}"
+        allocation_method: Dynamic
+        domain_name_label: "azure-poc"
+      register: azure_public_ip
+
+    - name: Dump az_subnets var
+      ansible.builtin.debug:
+        msg: "{{ az_subnets.results | selectattr('state.name', 'in', 'azure_poc_sub_ext') | map(attribute='state.id') }}"
+
+    - name: Configure Azure Application Gateway
+      azure.azcollection.azure_rm_appgateway:
+        resource_group: "{{ resource_group_name }}"
+        name: "{{ prefix }}_gateway"
+        sku:
+          name: standard_small
+          tier: standard_v2
+          capacity: 2
+        gateway_ip_configurations:
+          - subnet:
+              name: "{{ subnets[1].name }}"
+              virtual_network_name: "{{ subnets[1].vnet }}"
+            name: app_gateway_ip_config
+        frontend_ip_configurations:
+          - public_ip_address: "juiceshop-public-ip"
+            name: app_gateway_frontend_ip
+        frontend_ports:
+          - port: 80
+            name: app_gateway_frontend_port
+        backend_address_pools:
+          - backend_addresses: "{{ formatted_ip_list }}"
+            name: app_gateway_backend_pool
+        backend_http_settings_collection:
+          - port: 80
+            protocol: http
+            cookie_based_affinity: enabled
+            name: app_gateway_backend_http_settings
+        http_listeners:
+          - frontend_ip_configuration: app_gateway_frontend_ip
+            frontend_port: app_gateway_frontend_port
+            name: app_gateway_http_listener
+        request_routing_rules:
+          - rule_type: Basic
+            backend_address_pool: app_gateway_backend_pool
+            backend_http_settings: app_gateway_backend_http_settings
+            http_listener: app_gateway_http_listener
+            name: rule1
+

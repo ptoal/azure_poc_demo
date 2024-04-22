@@ -5,20 +5,10 @@
 
   # Temporary
   vars:
-    resource_group_name: azure_poc_ptoal
-    storage_account_name: ptoalpoc
     operating_system: other
     publisher: MicrosoftWindowsServer
     version: latest
     offer: WindowsServer
-    azureuser: azadmin
-    azurepassword: !vault |
-          $ANSIBLE_VAULT;1.2;AES256;rhdemo
-          35336464363933383136343062663761653365663936393366636233616166653830303932316165
-          3161386333396139313938646666656336626632343534660a393463326333383330353739623862
-          37363165393735636361383861633133643335316135396661376439353066356364626636666638
-          6335613735343534340a633764343532656435353265303534353562343061643334313539663939
-          65366133366239363330623261643266303764616465323465376433376436636263
     sku: 2022-datacenter-azure-edition-core
     vm_size: Standard_D4s_v3
     vm_names: "{{ new_vm_hostname.split(',') }}"
@@ -26,13 +16,8 @@
     #   - "{{ new_vm_hostname }}"
 
   tasks:
-    - name: Resource Group Creation
-      ansible.builtin.include_role:
-        name: azure_create_resource_group
-
-    - name: Storage Account Creation
-      ansible.builtin.include_role:
-        name: azure_create_storage_account
+    - name: Create RG
+      include_role: azure_create_resource_group
 
     - name: Provision instance Windows
       azure.azcollection.azure_rm_virtualmachine:
@@ -121,7 +106,3 @@
         - name: Loop to verify SSH
           ansible.builtin.include_tasks: enable_ssh_loop_azure.yml
           loop: "{{ vm_names }}"
-
-    - name: Test Debug
-      debug:
-        msg: "Hello World"

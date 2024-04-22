@@ -15,6 +15,8 @@
         resource_group: "{{ resource_group_name }}"
         name: "{{ item.name }}"
         state: absent
+        tags:
+          ansible: managed
       register: win_destroy_result
       until: win_destroy_result is not failed
       retries: 30

@@ -1,0 +1,45 @@
+---
+- name: Get facts for all subscriptions, including ones that are disabled.
+  azure.azcollection.azure_rm_subscription_info:
+    all: true
+  register: az_subscription
+
+- name: Resource Group Creation
+  ansible.builtin.include_role:
+    name: azure_create_resource_group
+
+- name: Storage Account Creation
+  ansible.builtin.include_role:
+    name: azure_create_storage_account
+
+
+- name: Create virtual network
+  azure.azcollection.azure_rm_virtualnetwork:
+    name: "{{ prefix }}_rg_vnet"
+    address_prefixes_cidr:
+      - "{{ az_rg_vnet }}"
+    resource_group: "{{ prefix }}_rg"
+    state: present
+
+- name: Ensure NSG's Exist
+  azure.azcollection.azure_rm_securitygroup:
+    resource_group: "{{ item.rg }}"
+    name: "{{ item.name }}"
+    tags:
+      ansible: managed
+    purge_rules: true
+    rules: "{{ nsg_rules[item.ruleset] }}"
+  loop: '{{ nsg_config }}'
+
+
+- name: Create subnets
+  azure.azcollection.azure_rm_subnet:
+    name: "{{ item.name }}"
+    virtual_network_name: "{{ item.vnet }}"
+    resource_group: "{{ item.resGroup }}"
+    security_group: "{{ item.secGroup }}"
+    address_prefix_cidr: "{{ item.cidr }}"
+    state: present
+  with_items: "{{ subnets }}"
+  register: az_subnets
+  tags: subnets

@@ -7,6 +7,10 @@
       ansible.builtin.debug:
         msg: "Hello world!"
 
+    - name: Show var
+      debug:
+        var: test_message
+
     - name: SNow Message
       ansible.builtin.debug:
         msg: "{{ greeting_name_input }} says: {{ greeting_message_input }}"

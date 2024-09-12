@@ -17,3 +17,4 @@
     host: "{{ publicipaddress }}"
     timeout: 600
   when: publisher == "MicrosoftWindowsServer"
+

@@ -1,3 +1,4 @@
+
 ---
 - name: Apply CIS 2022
   hosts: all

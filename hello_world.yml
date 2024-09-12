@@ -11,3 +11,6 @@
       ansible.builtin.debug:
         msg: "{{ greeting_name_input }} says: {{ greeting_message_input }}"
       when: greeting_message_input and greeting_name_input
+    - name: Testathon
+      ansible.builtin.debug:
+        msg: Test!
